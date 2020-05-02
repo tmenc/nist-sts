@@ -1,8 +1,10 @@
 #! /usr/bin/env bash
 
 FILE="$1"
-# DEFAULT_STREAM_LEN=1000000
-DEFAULT_STREAM_LEN=10000
+
+if [ -z "$STREAM_LEN" ]
+then STREAM_LEN=1000000
+fi
 
 CHECKER=scripts/file-is-ascii.exe
 OUT=$("$CHECKER" "$FILE")
@@ -26,10 +28,9 @@ case "$OUT_TYPE" in
 		;;
 esac
 
-if [ 0 == $((OUT_SIZE % DEFAULT_STREAM_LEN)) ]
+if [ 0 == $((OUT_SIZE % STREAM_LEN)) ]
 then
-	STREAM_LEN=$DEFAULT_STREAM_LEN
-	STREAM_COUNT=$((OUT_SIZE / DEFAULT_STREAM_LEN))
+	STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
 else
 	STREAM_LEN=$OUT_SIZE
 	STREAM_COUNT=1
@@ -37,6 +38,11 @@ fi
 
 printf "0\n$FILE\n1\n0\n$STREAM_COUNT\n$TYPE_SWITCH" | \
 	./assess "$STREAM_LEN"
+
+echo
+echo "FAILS:"
+scripts/show-fails.sh
+echo
 
 FAILS=$(scripts/number-of-fails.sh)
 TOTAL=$(scripts/total-test-count.sh)
