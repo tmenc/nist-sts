@@ -36,6 +36,9 @@ else
 	STREAM_COUNT=1
 fi
 
+echo "STREAM LENGTH: $STREAM_LEN"
+echo "STREAM COUNT:  $STREAM_COUNT"
+
 printf "0\n$FILE\n1\n0\n$STREAM_COUNT\n$TYPE_SWITCH" | \
 	./assess "$STREAM_LEN"
 
