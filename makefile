@@ -4,6 +4,7 @@ ROOTDIR = .
 SRCDIR = $(ROOTDIR)/src
 OBJDIR = $(ROOTDIR)/obj
 VPATH  = src:obj:include
+SCRIPTDIR = $(ROOTDIR)/scripts
 
 EXPERIMENTS = AlgorithmTesting BBS CCG G-SHA1 LCG MODEXP MS QCG1 QCG2 XOR
 SUBDIRS = Frequency BlockFrequency Runs LongestRun Rank FFT NonOverlappingTemplate OverlappingTemplate Universal LinearComplexity Serial ApproximateEntropy CumulativeSums RandomExcursions RandomExcursionsVariant
@@ -20,9 +21,14 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/dfft.o $(OBJDIR)/cephes.o $(OBJDIR)/matrix.o \
       $(OBJDIR)/utilities.o $(OBJDIR)/generators.o $(OBJDIR)/genutils.o
 
-all: compile $(EXPERIMENTSDS)
+all: compile $(EXPERIMENTSDS) scripts
 
 compile: | $(OBJDIR) assess
+
+scripts: $(SCRIPTDIR)/file-is-ascii.exe
+
+$(SCRIPTDIR)/file-is-ascii.exe: $(SCRIPTDIR)/file-is-ascii.c
+	$(CC) -o $@ $^
 
 assess: $(OBJ)
 	$(CC) -o $@ $(OBJ) -lm
@@ -104,7 +110,7 @@ $(OBJDIR)/generators.o: $(SRCDIR)/generators.c defs.h externs.h utilities.h \
 	$(CC) -o $@ $(GCCFLAGS) $(SRCDIR)/generators.c
 
 clean:
-	rm -f assess $(OBJDIR)/*.o
+	rm -f assess $(OBJDIR)/*.o scripts/*.exe
 	@ for d in $(EXPERIMENTSDS) ; do ([ -d $$d ] && rmdir -v $$d) || true ; done
 	@ for d in $(EXPERIMENTSD) ; do ([ -d $$d ] && rmdir -v $$d) || true ; done
 
