@@ -3,7 +3,7 @@
 FILE="$1"
 
 if [ -z "$STREAM_LEN" ]
-then STREAM_LEN=1000000
+then STREAM_LEN=$((400 * 1000))
 fi
 
 CHECKER=scripts/file-is-ascii.exe
@@ -28,12 +28,15 @@ case "$OUT_TYPE" in
 		;;
 esac
 
-if [ 0 == $((OUT_SIZE % STREAM_LEN)) ]
+if [ -z "$STREAM_COUNT" ]
 then
-	STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
-else
-	STREAM_LEN=$OUT_SIZE
-	STREAM_COUNT=1
+	if [ 0 == $((OUT_SIZE % STREAM_LEN)) ]
+	then
+		STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
+	else
+		STREAM_LEN=$OUT_SIZE
+		STREAM_COUNT=1
+	fi
 fi
 
 echo "STREAM LENGTH: $STREAM_LEN"
