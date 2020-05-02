@@ -5,6 +5,11 @@ SRCDIR = $(ROOTDIR)/src
 OBJDIR = $(ROOTDIR)/obj
 VPATH  = src:obj:include
 
+EXPERIMENTS = AlgorithmTesting BBS CCG G-SHA1 LCG MODEXP MS QCG1 QCG2 XOR
+SUBDIRS = Frequency BlockFrequency Runs LongestRun Rank FFT NonOverlappingTemplate OverlappingTemplate Universal LinearComplexity Serial ApproximateEntropy CumulativeSums RandomExcursions RandomExcursionsVariant
+EXPERIMENTSD = $(shell for d in $(EXPERIMENTS) ; do echo "$(ROOTDIR)/experiments/$$d" ; done)
+EXPERIMENTSDS = $(shell for d in $(EXPERIMENTS) ; do for s in $(SUBDIRS) ; do echo "$(ROOTDIR)/experiments/$$d/$$s" ; done ; done)
+
 OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/cusum.o $(OBJDIR)/runs.o $(OBJDIR)/longestRunOfOnes.o \
       $(OBJDIR)/serial.o $(OBJDIR)/rank.o $(OBJDIR)/discreteFourierTransform.o \
@@ -21,6 +26,9 @@ compile: | $(OBJDIR) assess
 
 assess: $(OBJ)
 	$(CC) -o $@ $(OBJ) -lm
+
+$(EXPERIMENTSDS):
+	mkdir -p $@
 
 $(OBJDIR):
 	mkdir -p $@
@@ -97,5 +105,7 @@ $(OBJDIR)/generators.o: $(SRCDIR)/generators.c defs.h externs.h utilities.h \
 
 clean:
 	rm -f assess $(OBJDIR)/*.o
+	@ for d in $(EXPERIMENTSDS) ; do ([ -d $$d ] && rmdir -v $$d) || true ; done
+	@ for d in $(EXPERIMENTSD) ; do ([ -d $$d ] && rmdir -v $$d) || true ; done
 
 rebuild: clean assess
