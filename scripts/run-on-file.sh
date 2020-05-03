@@ -3,7 +3,7 @@
 FILE="$1"
 
 if [ -z "$STREAM_LEN" ]
-then STREAM_LEN=$((400 * 1000))
+then STREAM_LEN=$((50 * 1000))
 fi
 
 CHECKER=scripts/file-is-ascii.exe
@@ -14,11 +14,11 @@ TYPE_SWITCH=dunno
 
 case "$OUT_TYPE" in
 	yes)
-		echo "file recognized as ascii with size = $OUT_SIZE"
+		echo "File recognized as ASCII with size = $OUT_SIZE"
 		TYPE_SWITCH=0
 		;;
 	no)
-		echo "file recognized as binary with size = $OUT_SIZE"
+		echo "File recognized as BINARY with size = $OUT_SIZE"
 		TYPE_SWITCH=1
 		;;
 	*)
@@ -29,18 +29,12 @@ case "$OUT_TYPE" in
 esac
 
 if [ -z "$STREAM_COUNT" ]
-then
-	if [ 0 == $((OUT_SIZE % STREAM_LEN)) ]
-	then
-		STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
-	else
-		STREAM_LEN=$OUT_SIZE
-		STREAM_COUNT=1
-	fi
+then STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
 fi
 
 echo "STREAM LENGTH: $STREAM_LEN"
 echo "STREAM COUNT:  $STREAM_COUNT"
+echo "LEFT OUT:  $((OUT_SIZE - STREAM_COUNT * STREAM_LEN))"
 
 printf "0\n$FILE\n1\n0\n$STREAM_COUNT\n$TYPE_SWITCH" | \
 	./assess "$STREAM_LEN"
