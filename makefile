@@ -21,9 +21,10 @@ OBJ = $(OBJDIR)/assess.o $(OBJDIR)/frequency.o $(OBJDIR)/blockFrequency.o \
       $(OBJDIR)/dfft.o $(OBJDIR)/cephes.o $(OBJDIR)/matrix.o \
       $(OBJDIR)/utilities.o $(OBJDIR)/generators.o $(OBJDIR)/genutils.o
 
-all: compile $(EXPERIMENTSDS) scripts
+all: compile directories scripts
 
 compile: | $(OBJDIR) assess
+directories: $(EXPERIMENTSDS)
 
 scripts: $(SCRIPTDIR)/file-is-ascii.exe
 
@@ -115,3 +116,6 @@ clean:
 	@ for d in $(EXPERIMENTSD) ; do ([ -d $$d ] && rmdir -v $$d) || true ; done
 
 rebuild: clean assess
+
+.PHONY: all clean compile rebuild directories scripts
+

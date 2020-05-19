@@ -32,9 +32,19 @@ if [ -z "$STREAM_COUNT" ]
 then STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
 fi
 
-echo "STREAM LENGTH: $STREAM_LEN"
-echo "STREAM COUNT:  $STREAM_COUNT"
+if [ -z "$OUTPUT_DIRECTORY" ]
+then OUTPUT_DIRECTORY=.
+else
+	mkdir -p "$OUTPUT_DIRECTORY"
+	cp -r $(ls) "$OUTPUT_DIRECTORY"
+	cd "$OUTPUT_DIRECTORY"
+	make directories --always-make --keep-going
+fi
+
+echo "STREAM_LEN: $STREAM_LEN"
+echo "STREAM_COUNT:  $STREAM_COUNT"
 echo "LEFT OUT:  $((OUT_SIZE - STREAM_COUNT * STREAM_LEN))"
+echo "OUTPUT_DIRECTORY:  $OUTPUT_DIRECTORY"
 
 printf "0\n$FILE\n1\n0\n$STREAM_COUNT\n$TYPE_SWITCH" | \
 	./assess "$STREAM_LEN"
