@@ -38,6 +38,10 @@ int main(int argc, char **argv) {
 
 	const char *filename = argv[1];
 	FILE *fp = fopen(filename, "r");
+	if (fp == NULL) {
+		printf("Could not open file <%s>\n", filename);
+		return 1;
+	}
 
 	int is_ascii = count_ascii_chars(fp);
 

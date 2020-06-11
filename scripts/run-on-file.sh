@@ -22,8 +22,7 @@ case "$OUT_TYPE" in
 		TYPE_SWITCH=1
 		;;
 	*)
-		echo "error file not recognized"
-		echo "$OUT"
+		echo "error file not recognized: <$OUT>"
 		exit 1
 		;;
 esac
