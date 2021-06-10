@@ -1,8 +1,8 @@
-#! /usr/bin/env bash
+#!/bin/sh
 
 FILE="$1"
 
-if [ -z "$STREAM_LEN" ]
+if test -z "$STREAM_LEN"
 then STREAM_LEN=$((50 * 1000))
 fi
 
@@ -27,11 +27,11 @@ case "$OUT_TYPE" in
 		;;
 esac
 
-if [ -z "$STREAM_COUNT" ]
+if test -z "$STREAM_COUNT"
 then STREAM_COUNT=$((OUT_SIZE / STREAM_LEN))
 fi
 
-if [ -z "$OUTPUT_DIRECTORY" ]
+if test -z "$OUTPUT_DIRECTORY"
 then OUTPUT_DIRECTORY=.
 else
 	mkdir -p "$OUTPUT_DIRECTORY"
@@ -55,6 +55,6 @@ echo
 
 FAILS=$(scripts/number-of-fails.sh)
 TOTAL=$(scripts/total-test-count.sh)
-FRAC=$(echo "3k $FAILS $TOTAL / 100 * p" | dc)
+FRAC=$(echo | awk "{ print ($FAILS / $TOTAL) * 100 }")
 echo "NUMBER OF FAILS: $FRAC%"
 
